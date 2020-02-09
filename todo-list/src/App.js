@@ -10,6 +10,53 @@ class App extends React.Component {
       list : []
     };
   }
+
+  //  Incorporating local storage 
+  componentDidMount() {
+    this.hydrateStateWithLocalStorage();
+
+    // add event listener to save state to localStorage
+    // When user leaves / refreshes the page 
+    window.addEventListener(
+      "beforeunload",
+      this.saveStateToLocalStorage.bind(this)
+    );
+  }
+  componentWillUnmount() {
+    window.removeEventListener(
+      "beforeprint",
+      this.saveStateToLocalStorage.bind(this)
+    );  
+    this.saveStateToLocalStorage();
+  }
+  hydrateStateWithLocalStorage() {
+    // for all items in state 
+    for (let key in this.state) {
+      // if the key exists in localStorage 
+      if(localStorage.hasOwnProperty(key) ) {
+        //get the key's value from LocalStorage 
+        let value = localStorage.getItem(key);
+
+        // parse the localStograge and setState 
+        try {
+          value = JSON.parse(value);
+          this.setState({
+            [key] : value
+          });
+        } catch(e) {
+          //handle empty string 
+          this.setState({[key] : value})
+        }
+      }
+    }
+  }
+  saveStateToLocalStorage() {
+     // for every item in React state
+     for (let key in this.state) {
+      // save to localStorage
+      localStorage.setItem(key, JSON.stringify(this.state[key]));
+    }
+  }
   updateInput(key,value){
     // update react state 
     this.setState({ [key] : value});
