@@ -33,6 +33,15 @@ class App extends React.Component {
     });
     
   }
+  deleteItem(id) {
+    // copy current list of item 
+    const list = [...this.state.list];
+
+    // filter out the item being deleted 
+    const updateList =  list.filter(item => item.id !== id);
+
+    this.setState({ list : updateList});
+  }
   render(){
 
     return (
@@ -57,7 +66,20 @@ class App extends React.Component {
             </button>
             <br/>
             <br/>
-
+            <ul>
+              {
+                this.state.list.map(item => {
+                  return(
+                    <li key={item.id}>
+                      {item.value} 
+                      <button className="btn btn-floating" onClick={() => this.deleteItem(item.id)}>
+                        <i class="material-icons">x</i>
+                      </button>
+                    </li>
+                  )
+                })
+              }
+            </ul>
          </div>
        </div>
       </div>
